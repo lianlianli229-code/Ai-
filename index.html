@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Visual Skills — 技能广场与互助社区</title>
+<style>
+:root{--paper:#f7f5ef;--ink:#282722;--muted:#858178;--line:#e4e0d7;--card:#fffdf8;--chip:#efede6;--brand:#ea580c;--brand-soft:#fff7ed;--green:#15803d;--green-soft:#dcfce7}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}
+.topbar{min-height:66px;height:auto;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:10px 2.8%;gap:14px;flex-wrap:wrap;position:sticky;top:0;background:rgba(247,245,239,.96);backdrop-filter:blur(12px);z-index:20}
+.brand{display:flex;align-items:baseline;gap:12px;white-space:nowrap}.brand-name{font:700 22px Georgia,serif;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}.brand-badge{background:var(--brand);color:#fff;font-size:11px;font-family:sans-serif;padding:3px 8px;border-radius:20px;font-weight:600}.brand-sub{font:12px Georgia,serif;color:#a09a8e}
+.toplinks{display:flex;gap:8px;align-items:center;font-size:13px;flex-wrap:wrap}.navlink{border:0;background:transparent;color:inherit;padding:9px 10px;display:flex;align-items:center;gap:5px;font-size:13px;border-radius:8px;border-bottom:2px solid transparent;white-space:nowrap}.navlink.active{border-bottom:2px solid var(--brand);background:var(--brand-soft);color:var(--brand);font-weight:700}
+.btn-publish{background:#292821;color:#fff;border:0;border-radius:30px;padding:8px 14px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:opacity .15s}.btn-publish.orange{background:var(--brand)}.btn-publish:hover{opacity:.9}
+.btn-google{background:#fff;color:#282722;border:1.5px solid #d6d1c7;border-radius:30px;padding:7px 14px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:7px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.06);transition:all .15s}.btn-google:hover{border-color:var(--brand);color:var(--brand)}.btn-google.logged{background:#f0fdf4;border-color:#86efac;color:#166534}.g-avatar{width:22px;height:22px;border-radius:50%;background:var(--brand);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+/* 我的技能炉 · 正式个人账号与登录中心 */
+.account-center{margin:0 0 24px;border-radius:16px;border:1px solid #e2dccf;background:linear-gradient(135deg,#ffffff 0%,#faf7f0 100%);box-shadow:0 10px 30px rgba(40,39,34,.06);overflow:hidden}
+.account-login-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:0}
+.account-login-info{padding:28px 30px;background:linear-gradient(145deg,#292821 0%,#3d392e 100%);color:#fff;display:flex;flex-direction:column;justify-content:center;gap:14px}
+.account-login-info h2{margin:0;font:700 22px/1.3 Georgia,"Songti SC",serif;color:#fff}
+.account-login-info p{margin:0;font-size:13px;color:#d6d1c7;line-height:1.65}
+.account-perks{display:grid;gap:8px;margin-top:4px;font-size:12px;color:#f3efe6}
+.account-perks div{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);padding:8px 12px;border-radius:8px}
+.account-login-form{padding:28px 30px;display:flex;flex-direction:column;justify-content:center;gap:14px;background:#fffdf9}
+.google-mark{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#431407;background:#ffedd5;border:1px solid #fed7aa;padding:5px 12px;border-radius:20px;align-self:flex-start}
+.account-profile-card{padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.profile-left{display:flex;align-items:center;gap:18px}
+.profile-avatar-lg{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#ea580c,#c2410c);color:#fff;display:flex;align-items:center;justify-content:center;font:700 26px Georgia,serif;box-shadow:0 8px 20px rgba(234,88,12,.25);flex-shrink:0}
+.profile-meta h2{margin:0 0 6px;font-size:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.profile-email{font-size:13px;color:#666159;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.verified-pill{background:#dcfce7;color:#166534;border:1px solid #86efac;font-size:11px;padding:2px 9px;border-radius:20px;font-weight:700}
+.profile-stats{display:flex;gap:14px;flex-wrap:wrap}
+.p-stat{background:#f7f5ef;border:1px solid var(--line);border-radius:12px;padding:10px 18px;text-align:center;min-width:105px}
+.p-stat b{font:700 20px Georgia,serif;color:var(--brand);display:block}
+.p-stat span{font-size:11px;color:#78736a}
+.profile-actions{display:flex;gap:8px;flex-wrap:wrap;width:100%;padding-top:16px;margin-top:4px;border-top:1px dashed var(--line);justify-content:space-between;align-items:center}
+.layout{display:grid;grid-template-columns:235px minmax(0,1fr);gap:34px;padding:28px 3% 70px}
+.sidebar{border-right:1px solid var(--line);padding-right:22px;min-height:calc(100vh - 100px)}.navlist{display:grid;gap:5px}.navitem{border:0;background:transparent;color:#625f57;text-align:left;padding:10px 12px;border-radius:9px;display:flex;align-items:center;justify-content:space-between;font-size:13.5px;transition:all .15s}.navitem-left{display:flex;align-items:center;gap:11px}.navitem.active,.navitem:hover{background:#eeebe3;color:#26251f;font-weight:600}.navitem.help-tab.active{background:var(--brand-soft);color:var(--brand)}
+.badge-pill{background:var(--brand);color:#fff;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:700}
+.side-divider{height:1px;background:var(--line);margin:20px 0}.side-heading{font-size:11px;font-weight:700;letter-spacing:1px;margin:0 0 10px 10px;color:#858178;text-transform:uppercase}
+.catrow{width:100%;border:0;background:transparent;display:flex;justify-content:space-between;align-items:center;padding:9px 10px;color:#666159;border-radius:7px;font-size:13px}.catrow:hover,.catrow.active{background:#eeebe3;color:#25241f;font-weight:600}.catrow small{color:#a19b91}
+.side-promo{margin-top:28px;border-radius:12px;padding:18px 16px;background:linear-gradient(145deg,#fff7ed,#ffedd5);border:1px solid #fed7aa;color:#431407;display:flex;flex-direction:column;gap:6px}.side-promo strong{font-size:15px}.side-promo span{font-size:12px;color:#9a3412;line-height:1.5}.side-promo button{margin-top:6px;align-self:flex-start;background:var(--brand);color:#fff;border:0;border-radius:30px;padding:7px 14px;font-size:12px;font-weight:600}
+main{min-width:0}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin:0 0 28px;padding-bottom:22px;border-bottom:1px solid var(--line)}.eyebrow{text-transform:uppercase;color:var(--brand);font:700 11px sans-serif;letter-spacing:1.8px;margin-bottom:8px}.hero h1{font:clamp(28px,3.4vw,42px)/1.15 Georgia,"Songti SC",serif;margin:0 0 10px}.hero p{font-size:13.5px;color:#78736a;margin:0;line-height:1.7;max-width:620px}
+.stats{display:flex;gap:0;flex-shrink:0}.stat{padding:0 20px;border-left:1px solid var(--line);text-align:center}.stat b{font:22px Georgia,serif;display:block;margin-bottom:4px;color:var(--ink)}.stat span{font-size:11px;color:#888278}
+.toolbar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center}.searchbox{flex:1;display:flex;align-items:center;gap:10px;border:1px solid #ded9cf;border-radius:30px;padding:0 16px;background:rgba(255,255,255,.65);min-width:200px}.searchbox input{border:0;outline:0;background:transparent;width:100%;height:40px;font-size:13px;color:var(--ink)}.select{border:1px solid #ded9cf;border-radius:9px;padding:0 12px;height:40px;background:rgba(255,255,255,.5);color:#5c584f;font-size:12px}.clear-btn{border:0;background:transparent;color:#888;font-size:12px;text-decoration:underline}
+.resultsline{display:flex;justify-content:space-between;align-items:center;margin:0 0 16px;color:#8a857b;font-size:12px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:20px 18px}
+.card{border:1px solid #e8e3da;border-radius:12px;overflow:hidden;background:var(--card);transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column}.card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(57,49,35,.09)}
+.image-wrap{height:200px;position:relative;overflow:hidden;background:#e7e1d6}.card-image{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}.card:hover .card-image{transform:scale(1.04)}
+.category-pill{position:absolute;left:12px;top:12px;background:rgba(255,253,247,.94);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;color:#3f3c35;backdrop-filter:blur(8px)}
+.bookmark{position:absolute;right:12px;top:12px;height:30px;padding:0 10px;border:0;background:rgba(35,34,29,.65);color:#fff;border-radius:20px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:4px;backdrop-filter:blur(4px)}.bookmark.saved{background:var(--brand);color:#fff}
+.card-body{padding:15px;display:flex;flex-direction:column;flex:1}.card h2{font-size:15px;font-weight:700;margin:0 0 6px}.desc{font-size:12px;line-height:1.7;color:#78736a;margin:0 0 12px;flex:1}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}.tag{border:0;background:var(--chip);color:#666157;border-radius:20px;padding:3px 9px;font-size:10px}
+.card-meta{display:flex;justify-content:space-between;font-size:11px;color:#918b81;margin-bottom:10px}
+.card-footer{display:flex;align-items:center;justify-content:space-between;color:#827d74;font-size:11px;border-top:1px solid #f0ede5;padding-top:10px}
+.detail-btn{border:0;background:#292821;color:#fff;border-radius:20px;font-size:11px;font-weight:600;padding:5px 12px}
+/* 求助栏卡片专属样式 */
+.help-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:22px}
+.help-card{border:1px solid #fed7aa;border-radius:14px;background:#fffdf9;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 6px 20px rgba(234,88,12,.05)}
+.help-top{display:grid;grid-template-columns:145px 1fr;gap:14px;padding:15px;border-bottom:1px dashed #fed7aa}
+.help-ref-img{width:145px;height:145px;border-radius:10px;object-fit:cover;background:#f3f0e8;border:1px solid var(--line)}
+.help-status{display:inline-block;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;background:#ffedd5;color:#c2410c;margin-bottom:6px}.help-status.solved{background:var(--green-soft);color:var(--green)}
+.help-replies{padding:12px 15px;background:#faf7f0;flex:1;display:flex;flex-direction:column;gap:10px}
+.reply-item{background:#fff;border:1px solid #e7e2d8;border-radius:9px;padding:10px 12px;font-size:12px}
+.reply-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-weight:600;color:#292821}
+.reply-prompt{background:#f4f2eb;padding:7px 9px;border-radius:6px;font-family:monospace;font-size:11px;color:#49453d;margin:6px 0;white-space:pre-wrap;max-height:80px;overflow-y:auto}
+/* 模态框与表单 */
+.modal-backdrop{position:fixed;inset:0;background:rgba(31,29,24,.58);z-index:40;display:none;align-items:flex-start;justify-content:center;padding:42px 18px 24px;overflow-y:auto;backdrop-filter:blur(4px)}.modal-backdrop.open{display:flex}
+.modal{width:min(880px,100%);max-height:92vh;overflow:auto;background:var(--card);border-radius:16px;display:grid;grid-template-columns:1fr 1.15fr;position:relative;box-shadow:0 24px 48px rgba(0,0,0,.22)}
+.modal-img{width:100%;height:100%;min-height:380px;max-height:85vh;object-fit:cover;display:block;background:#e7e1d6}
+.modal-side{padding:24px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.close{border:0;background:#f1eee6;border-radius:50%;width:32px;height:32px;font-size:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center}.close:hover{background:#e4e0d7}
+.archive-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.archive-box{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#faf8f2;font-size:12px;display:flex;flex-direction:column;gap:4px}
+.archive-box b{color:#78736a;font-size:11px}.archive-box span{color:var(--ink);line-height:1.5}
+.prompt-box{white-space:pre-wrap;background:#f2f0e9;border:1px solid #e5e1d7;border-radius:8px;padding:11px;font-size:12px;line-height:1.7;font-family:monospace;color:#49453d;max-height:150px;overflow-y:auto}
+.form-row{display:flex;flex-direction:column;gap:5px}.form-row label{display:block;font-size:12px;font-weight:600;color:#45423b}.form-row input,.form-row select,.form-row textarea{width:100%;border:1px solid #d6d1c7;border-radius:8px;padding:9px 11px;font-size:13px;background:#fff}.form-row textarea{min-height:72px;resize:vertical}
+.modal-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto;padding-top:6px}
+.primary{border:0;border-radius:30px;background:#292821;color:#fff;padding:10px 18px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px}.primary.orange{background:var(--brand)}
+.secondary{border:1px solid #d6d1c7;border-radius:30px;background:#f4f1ea;color:#292821;padding:9px 16px;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.empty{grid-column:1/-1;padding:60px 20px;text-align:center;color:#8a857b;border:1px dashed var(--line);border-radius:12px}
+.toast{position:fixed;top:82px;left:50%;transform:translateX(-50%);background:#292821;color:#fff;padding:10px 22px;border-radius:30px;font-size:13px;z-index:60;display:none;box-shadow:0 8px 24px rgba(0,0,0,.22)}
+@media(max-width:1180px){.brand-sub{display:none}}
+@media(max-width:960px){.layout{grid-template-columns:1fr}.sidebar{display:none}.hero{flex-direction:column;align-items:flex-start}.modal,.account-login-grid{grid-template-columns:1fr}.modal-img{height:240px;min-height:0}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-name">🔥 AI 技能社区 <span class="brand-badge">技能广场</span></div>
+    <div class="brand-sub">发现 · 装进技能炉 · 参考图互助</div>
+  </div>
+  <nav class="toplinks">
+    <button type="button" class="navlink active" id="topNavAll" data-nav="all">▦ 技能广场</button>
+    <button type="button" class="navlink" id="topNavHelp" data-nav="help">🆘 求助栏 <span class="badge-pill" id="topHelpCount">2</span></button>
+    <button type="button" class="navlink" id="topNavSaved" data-nav="saved">🔥 我的技能炉 (<span id="topSavedCount">0</span>)</button>
+    <button type="button" class="btn-publish" id="openPublishSkillBtn">➕ 发布新技能</button>
+    <button type="button" class="btn-publish orange" id="openPublishHelpBtn">📸 发参考图求助</button>
+    <button type="button" class="btn-google" id="userAuthBtn">🔑 Google 账号登录</button>
+  </nav>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="navlist">
+      <button class="navitem active" data-view="all"><span class="navitem-left"><span>▦</span>技能广场</span></button>
+      <button class="navitem help-tab" data-view="help"><span class="navitem-left"><span>🆘</span>参考图求助栏</span><span class="badge-pill" id="sideHelpCount">2</span></button>
+      <button class="navitem" data-view="popular"><span class="navitem-left"><span>♨</span>高分测评推荐</span></button>
+      <button class="navitem" data-view="saved"><span class="navitem-left"><span>🔥</span>我的技能炉</span><small id="sideSavedCount">0</small></button>
+    </div>
+    <div class="side-divider"></div>
+    <h3 class="side-heading">9 大技能赛道</h3>
+    <div id="categoryList"></div>
+    <div class="side-promo">
+      <strong>🆘 遇到好看的图不会生？</strong>
+      <span>在「求助栏」上传参考图，社区伙伴直接掏出技能炉里的同款 Skill 帮你跑通！</span>
+      <button id="sideAskHelpBtn">去发图求助 ↗</button>
+    </div>
+  </aside>
+
+  <main>
+    <section class="hero" id="heroSection">
+      <div>
+        <div class="eyebrow" id="heroEyebrow">SKILL NETWORK &amp; COMMUNITY</div>
+        <h1 id="heroTitle">AI 生图技能广场</h1>
+        <p id="heroDesc">每个技能包均包含「来源版本 · 使用工作流 · 适用模型 · 真实测评」。支持一键收入自己的技能炉，或在求助栏互助共建。</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="statTotalSkills">9</b><span>精选技能包</span></div>
+        <div class="stat"><b id="statTotalHelps">2</b><span>参考图互助</span></div>
+        <div class="stat"><b>云端</b><span>实时同步</span></div>
+      </div>
+    </section>
+
+    <section class="account-center" id="accountCenterSection" style="display:none"></section>
+
+    <section class="toolbar">
+      <label class="searchbox"><span>⌕</span><input id="searchInput" placeholder="搜索技能名称、关键词、提示词或求助内容..." /></label>
+      <select class="select" id="categoryFilter"><option value="">全部 9 大分类</option></select>
+      <select class="select" id="modelFilter"><option value="">适用模型</option><option>Midjourney</option><option>Flux</option><option>SDXL</option><option>DALL·E 3</option></select>
+      <select class="select" id="sortFilter"><option value="featured">排序：社区精选</option><option value="popular">最多人装炉</option><option value="new">最新贡献</option></select>
+      <button class="clear-btn" id="clearFilters">重置</button>
+    </section>
+
+    <div class="resultsline">
+      <span id="resultCount">正在展示技能广场</span>
+      <span id="cloudStatus">🔄 正在连接 Google 表格云端...</span>
+    </div>
+
+    <section class="gallery" id="gallery"></section>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzF4-XU4VXtVFr4g8Ow4dLJG6Jh3TknHJude15ioPRgX9-fR-zApvg-ck4cmGCB0m6k/exec";
+
+const cats = [
+  ["口播类", 1, "🎙️"],
+  ["特效类", 1, "⚡"],
+  ["圣经故事类", 1, "📖"],
+  ["实拍类", 1, "📷"],
+  ["卡片类", 1, "🗂️"],
+  ["灾难借势类", 1, "🌪️"],
+  ["剧情类", 1, "🎬"],
+  ["封面图、风景图", 1, "🌄"],
+  ["人设头像", 1, "👤"]
+];
+
+const skills = [
+  {id:1,title:"真人口播演播厅微表情",category:"口播类",desc:"针对短视频口播博主打造的超写实人物，眼神专注平视镜头，真实皮肤纹理，棚拍柔光。",workflow:"1. 选择 9:16 竖屏比例 → 2. 使用 85mm 人像镜头词锁定景深 → 3. 生成后可接入 HeyGen/即梦对口型",author:"官方精选 · v1.2",feedback:"实测 Midjourney v6.1 与 Flux 均能完美跑出自然眼神光，无塑料感。",tags:["口播","演播室","自然神态","真人质感"],model:"Midjourney v6.1 / Flux",models:["Midjourney","Flux"],difficulty:"入门",views:"15.2k",likes:1240,pop:98,date:9,img:"https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=900&q=85",prompt:"a professional content creator looking directly into camera with confident friendly expression, professional studio setting, soft dual rim lighting, clean modern acoustic foam background, authentic skin pores, 85mm portrait lens, f/1.8, 8k resolution --ar 9:16 --v 6.1"},
+  {id:2,title:"粒子流光与超现实视效",category:"特效类",desc:"适用于短视频转场、科幻震撼特效背景，带有高动态光影流转与能量粒子拖尾。",workflow:"1. 先生成暗黑高对比发光静帧 → 2. 导入可灵/Runway 作为首尾帧生成流体粒子运动",author:"视效实验室 · v2.0",feedback:"青粉霓虹光效对比极强，做片头吸睛率提升明显。",tags:["特效","粒子流","视效合成","发光能量"],model:"Midjourney / SDXL",models:["Midjourney","SDXL"],difficulty:"进阶",views:"18.6k",likes:1530,pop:96,date:8,img:"https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=900&q=85",prompt:"hyper-realistic cosmic energy sphere bursting with luminous neon particles, fluid light streaks, volumetric god rays, dark void background, vivid cyan and magenta glow, octane render, 8k cinematic visual effect --ar 16:9 --v 6.1"},
+  {id:3,title:"圣经红海分流史诗光辉",category:"圣经故事类",desc:"重现圣经史诗场景，摩西分红海巨浪矗立，天门开启降下神圣光芒，伦勃朗明暗对比。",workflow:"1. 强调 Caravaggio chiaroscuro（卡拉瓦乔明暗法）→ 2. 加入 volumetric god rays 强化神圣丁达尔光",author:"圣经视觉组 · v3.1",feedback:"史诗感拉满！主耶稣与摩西场景通用这套光影词。",tags:["圣经故事","红海","史诗电影感","神圣光辉"],model:"Midjourney / Flux",models:["Midjourney","Flux"],difficulty:"专业",views:"22.4k",likes:2100,pop:99,date:7,img:"https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=85",prompt:"biblical epic scene of Moses parting the red sea, colossal towering walls of crystal water, divine golden light breaking through tempestuous clouds, ancient robes, dramatic Caravaggio chiaroscuro, cinematic scale, historic holy atmosphere, 8k masterpiece --ar 16:9 --v 6.1"},
+  {id:4,title:"4K真实街拍日常纪实",category:"实拍类",desc:"告别AI塑料感的真实胶片抓拍摄影，自然环境反光与微弱颗粒感，保留生活即时性。",workflow:"1. 必加 candid unposed raw moment → 2. 使用 35mm 街拍焦段与富士胶片色感词",author:"纪实摄影师 · v1.5",feedback:"Flux.1 跑出来的雨夜地面反光跟真相机拍的一模一样。",tags:["纪实实拍","胶片颗粒","无AI感","生活抓拍"],model:"Flux.1 / Midjourney",models:["Flux","Midjourney"],difficulty:"入门",views:"16.8k",likes:1390,pop:94,date:6,img:"https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=900&q=85",prompt:"candid documentary street photography, dusk in rainy city, neon lights reflecting on wet asphalt, authentic subtle film grain, natural raw moment, unposed passersby, 35mm lens, f/2.0, Fujifilm color recipe, photorealistic --ar 16:9"},
+  {id:5,title:"Bento 便当盒视觉卡片",category:"卡片类",desc:"现代UI/UX设计风行的 Bento Grid 卡片排版，毛玻璃质感、微立体浮雕图标与科技感配色。",workflow:"1. 指定 bento grid layout → 2. 搭配 frosted glassmorphism 控制毛玻璃通透度",author:"UI设计炉 · v1.8",feedback:"做知识卡、视频信息图背景非常好用。",tags:["Bento卡片","毛玻璃","UI排版","科技质感"],model:"Midjourney / DALL·E 3",models:["Midjourney","DALL·E 3"],difficulty:"进阶",views:"12.3k",likes:920,pop:89,date:5,img:"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=900&q=85",prompt:"sleek bento grid visual card layout, futuristic UI dashboard widgets, translucent frosted glassmorphism panels, soft ambient purple and indigo lighting, clean modern vector typography, dribbble popular, clean minimal composition --ar 16:9 --v 6.1"},
+  {id:6,title:"超级风暴与雷暴海啸借势",category:"灾难借势类",desc:"极具震撼视觉冲击力的巨型超级单体风暴与惊涛骇浪，适合时事热点、灾难片借势视频。",workflow:"1. 采用大广角压迫视角 → 2. 结合 supercell vortex 与 lightning 营造极端天气反差",author:"爆款借势王 · v2.3",feedback:"前3秒完播率神器，压迫感极强。",tags:["灾难借势","极端天气","雷暴","史诗压迫感"],model:"Midjourney / Flux",models:["Midjourney","Flux"],difficulty:"专业",views:"24.1k",likes:1840,pop:97,date:4,img:"https://images.unsplash.com/photo-1516912481808-3406841bd33c?auto=format&fit=crop&w=900&q=85",prompt:"apocalyptic supercell thunderstorm vortex over turbulent dark ocean, massive lightning striking roaring waves, colossal ominous cloud structure, dramatic disaster movie shot, high dynamic range, intense volumetric atmosphere --ar 16:9 --v 6.1"},
+  {id:7,title:"雨夜悬疑电影故事剧照",category:"剧情类",desc:"充满戏剧悬疑与张力的电影叙事单帧，昏黄路灯下的雨雾，冷峻色调与故事延展性。",workflow:"1. 使用 2.39:1 宽银幕电影画幅 → 2. 锁定 Fincher color grading（大卫芬奇冷暖色调）",author:"短剧导演 · v1.4",feedback:"连续生成多张同色调分镜非常稳定。",tags:["剧情叙事","电影画幅","悬疑冷调","故事感"],model:"Midjourney v6.1",models:["Midjourney"],difficulty:"进阶",views:"19.5k",likes:1620,pop:95,date:3,img:"https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=900&q=85",prompt:"cinematic film still from a neo-noir suspense movie, solitary detective under a flickering warm streetlamp in heavy rain, dark alleys, glistening wet pavement reflections, atmospheric haze, wide anamorphic frame, Fincher color grading --ar 2.39:1 --v 6.1"},
+  {id:8,title:"极光雪山史诗风光封面",category:"封面图、风景图",desc:"8K绝美极光流转与雪峰峡湾倒影，纯净大气的构图与色彩，适合作为文章大图或视频封面。",workflow:"1. 构图预留顶部三分之一星空方便加封面大字 → 2. 镜像湖面提升画面通透感",author:"风光猎手 · v1.1",feedback:"直接当封面底图，加白色粗体字非常高级。",tags:["风景图","封面大图","极光雪山","大自然史诗"],model:"Flux.1 / SDXL",models:["Flux","SDXL"],difficulty:"入门",views:"31.2k",likes:2450,pop:100,date:2,img:"https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=85",prompt:"breathtaking panoramic landscape photography of vibrant emerald green aurora borealis swirling over rugged snowy mountains, crystal clear alpine lake reflections, star-filled arctic night sky, National Geographic masterpiece --ar 16:9"},
+  {id:9,title:"3D潮玩盲盒风格IP头像",category:"人设头像",desc:"可爱治愈的3D盲盒质感潮玩公仔，细腻的磨砂粘土与发光耳机配件，极具辨识度的人设头像。",workflow:"1. 1:1 头像方图 → 2. 核心材质词：soft matte silicone + subsurface scattering（次表面散射）",author:"IP造物主 · v2.0",feedback:"做账号统一头像人设非常讨喜。",tags:["人设头像","3D潮玩","盲盒公仔","IP形象"],model:"Midjourney / DALL·E 3",models:["Midjourney","DALL·E 3"],difficulty:"入门",views:"27.8k",likes:2190,pop:98,date:1,img:"https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=900&q=85",prompt:"cute 3D vinyl toy character avatar, stylized young explorer wearing cyber goggles and pastel oversized jacket, subsurface scattering, soft matte silicone texture, colorful studio backdrop, pop mart collectible aesthetic, 8k octane render --ar 1:1 --v 6.1"}
+];
+
+let helpRequests = [
+  {
+    id: 1,
+    status: "已有助力",
+    title: "求问这种温暖神圣的圣经人物逆光怎么写提示词？",
+    category: "圣经故事类",
+    author: "新手学员小雅",
+    desc: "我想生出一张既有古典油画厚重感、又有温暖夕阳逆光打在人物轮廓上的图，试了好几次都太假、没有光线情绪，求大佬分享技能炉里的同款配方！",
+    refImg: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80",
+    replies: [
+      {
+        helper: "圣经视觉组",
+        skillTitle: "圣经红海分流史诗光辉 (改编版)",
+        advice: "核心在于加上 Caravaggio chiaroscuro（卡拉瓦乔明暗对比）和 warm golden rim lighting（温暖金边逆光），不要写 3D render！可直接用下面我技能炉里的词：",
+        prompt: "biblical figure standing in prayer at golden hour, warm divine rim lighting illuminating hair and robe edges, Caravaggio chiaroscuro lighting, authenticlinen fabric texture, emotional peaceful expression, dust motes in sunbeams, 85mm lens --ar 9:16 --v 6.1"
+      }
+    ]
+  },
+  {
+    id: 2,
+    status: "求助中",
+    title: "这种灾难风暴压迫城市的特效镜头怎么控制构图？",
+    category: "灾难借势类",
+    author: "短视频阿杰",
+    desc: "参考图里这种低机位仰拍、乌云漩涡几乎压到屋顶的真实感，为什么我生出来总是像卡通画？求助力！",
+    refImg: "https://images.unsplash.com/photo-1527482797697-8795b05a13fe?auto=format&fit=crop&w=600&q=80",
+    replies: []
+  }
+];
+
+let view = "all";
+let category = "";
+let currentUser = null; // { email: "xxx@gmail.com", name: "昵称" }
+let cloudUserFurnaces = {}; // { "xxx@gmail.com": { name: "...", savedTitles: [...] } }
+let saved = new Set(); // 默认为空（0个），登录后加载当前 Google 账号专属技能炉
+
+const $ = id => document.getElementById(id);
+
+try {
+  const savedUserStr = localStorage.getItem("ai_current_google_user") || sessionStorage.getItem("ai_current_google_user");
+  if (savedUserStr) currentUser = JSON.parse(savedUserStr);
+  localStorage.removeItem("ai_custom_skills");
+} catch (e) {}
+
+function loadUserSavedFromLocalOrCloud() {
+  saved.clear();
+  if (!currentUser || !currentUser.email) return;
+  const emailKey = currentUser.email.trim().toLowerCase();
+  let titles = null;
+  if (cloudUserFurnaces && cloudUserFurnaces[emailKey] && Array.isArray(cloudUserFurnaces[emailKey].savedTitles)) {
+    titles = cloudUserFurnaces[emailKey].savedTitles;
+    if (cloudUserFurnaces[emailKey].name && !currentUser.name) currentUser.name = cloudUserFurnaces[emailKey].name;
+  } else {
+    try {
+      const localTitles = localStorage.getItem("ai_furnace_" + emailKey);
+      if (localTitles) titles = JSON.parse(localTitles);
+    } catch (e) {}
+  }
+  if (Array.isArray(titles)) {
+    const tSet = new Set(titles);
+    skills.forEach(s => { if (tSet.has(s.title)) saved.add(s.id); });
+  }
+}
+
+function updateAuthUI() {
+  const btn = $("userAuthBtn");
+  if (!btn) return;
+  if (currentUser && currentUser.email) {
+    const initial = (currentUser.name || currentUser.email)[0].toUpperCase();
+    btn.className = "btn-google logged";
+    btn.innerHTML = `<span class="g-avatar">${initial}</span><span>${currentUser.name || currentUser.email.split("@")[0]}</span><small style="opacity:.7">切换</small>`;
+  } else {
+    btn.className = "btn-google";
+    btn.innerHTML = `🔑 Google 账号登录`;
+  }
+}
+
+async function sendToCloud(payload) {
+  const fullPayload = {
+    ...payload,
+    userEmail: currentUser ? currentUser.email : "",
+    userName: currentUser ? currentUser.name : ""
+  };
+  const jsonStr = JSON.stringify(fullPayload);
+  try {
+    if (jsonStr.length < 1800) {
+      const res = await fetch(GOOGLE_SHEET_API + "?payload=" + encodeURIComponent(jsonStr));
+      const data = await res.json();
+      if (data && data.ok) return data;
+    }
+    const res = await fetch(GOOGLE_SHEET_API, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: jsonStr
+    });
+    return await res.json();
+  } catch (err) {
+    fetch(GOOGLE_SHEET_API, { method: "POST", mode: "no-cors", body: jsonStr }).catch(() => {});
+    return null;
+  }
+}
+
+function persistState(syncFurnaceToCloud = false) {
+  const savedTitles = skills.filter(s => saved.has(s.id)).map(s => s.title);
+  try {
+    if (currentUser && currentUser.email) {
+      const emailKey = currentUser.email.trim().toLowerCase();
+      localStorage.setItem("ai_current_google_user", JSON.stringify(currentUser));
+      sessionStorage.setItem("ai_current_google_user", JSON.stringify(currentUser));
+      localStorage.setItem("ai_furnace_" + emailKey, JSON.stringify(savedTitles));
+      cloudUserFurnaces[emailKey] = { name: currentUser.name, savedTitles };
+    }
+    localStorage.setItem("ai_help_requests", JSON.stringify(helpRequests));
+  } catch (e) {}
+  if (syncFurnaceToCloud && currentUser && currentUser.email) {
+    sendToCloud({ action: "syncSaved", savedTitles });
+  }
+}
+
+let pendingAuthAction = null;
+let isSwitchingAccount = false;
+
+function performLogin(emailRaw, nameRaw) {
+  const email = String(emailRaw || "").trim().toLowerCase();
+  if (!email || !email.includes("@")) {
+    toast("⚠️ 请输入有效的 Google 邮箱地址（例如 xxx@gmail.com）！");
+    return false;
+  }
+  const name = String(nameRaw || "").trim() || email.split("@")[0];
+  currentUser = { email, name };
+  isSwitchingAccount = false;
+  loadUserSavedFromLocalOrCloud();
+  persistState(true);
+  updateAuthUI();
+  initCategoryList();
+  render();
+  toast(`🎉 欢迎回来，${name} (${email})！已加载您的专属技能炉！`);
+  if (typeof pendingAuthAction === "function") {
+    const fn = pendingAuthAction;
+    pendingAuthAction = null;
+    setTimeout(() => fn(), 120);
+  }
+  return true;
+}
+
+function performLogout() {
+  currentUser = null;
+  isSwitchingAccount = false;
+  saved.clear();
+  try {
+    localStorage.removeItem("ai_current_google_user");
+    sessionStorage.removeItem("ai_current_google_user");
+  } catch (e) {}
+  updateAuthUI();
+  initCategoryList();
+  render();
+  toast("👋 已退出当前 Google 账号，技能炉已重置为空");
+}
+
+function renderAccountCenter() {
+  const box = $("accountCenterSection");
+  if (!box) return;
+  if (view !== "saved") {
+    box.style.display = "none";
+    return;
+  }
+  box.style.display = "block";
+
+  const knownEmails = Object.keys(cloudUserFurnaces || {});
+
+  if (!currentUser || !currentUser.email || isSwitchingAccount) {
+    box.innerHTML = `
+      <div class="account-login-grid">
+        <div class="account-login-info">
+          <div class="google-mark">🔑 GOOGLE ACCOUNT IDENTITY · 个人身份中心</div>
+          <h2>登录 Google 账号 · 开启您的专属技能炉</h2>
+          <p>每个 Google 邮箱拥有完全独立的技能炉档案。您收藏或上传的生图技能仅归属您个人名下，不会与其他人的技能炉混用。</p>
+          <div class="account-perks">
+            <div>🔒 <b>账号独立隔离</b>：不同 Google 邮箱的技能炉 100% 互不干扰</div>
+            <div>☁️ <b>云端表格永存</b>：实时同步至配套表格【12、用户技能炉档案】，刷新不丢失</div>
+            <div>✍️ <b>社区共创署名</b>：发布技能与助力求助时，自动展示您的个人身份</div>
+          </div>
+        </div>
+        <div class="account-login-form">
+          ${pendingAuthAction ? `<div style="background:#fff7ed;border:1px solid #fdba74;color:#c2410c;padding:9px 12px;border-radius:8px;font-size:12px;font-weight:600">⚡ 请先登录您的 Google 账号，登录后将自动继续刚才的操作！</div>` : ""}
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <strong style="font-size:16px;color:#282722">${isSwitchingAccount ? "🔀 切换 / 修改 Google 账号" : "🔥 个人技能炉账号登录"}</strong>
+          </div>
+          <div class="form-row">
+            <label>Google 邮箱账号（必填，作为唯一个人身份标识）</label>
+            <input id="inlineEmailInput" type="email" placeholder="请输入您的 Gmail 邮箱，例如：clara@gmail.com" value="${currentUser ? currentUser.email : ''}" />
+          </div>
+          <div class="form-row">
+            <label>个人社区昵称（选填，发布技能与助力时展示）</label>
+            <input id="inlineNameInput" type="text" placeholder="例如：Clara 的技能炉（留空则自动使用邮箱前缀）" value="${currentUser ? currentUser.name : ''}" />
+          </div>
+          ${knownEmails.length ? `
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+              <span style="font-size:11px;color:#858178">☁️ 已有云端档案快捷切换：</span>
+              ${knownEmails.map(em => `<button type="button" class="tag" style="cursor:pointer;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412" data-quick-email="${em}">👤 ${cloudUserFurnaces[em].name || em} (${em})</button>`).join("")}
+            </div>
+          ` : ""}
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+            <button type="button" class="primary orange" id="inlineLoginSubmitBtn" style="flex:1">✅ 立即登录并加载我的专属技能炉</button>
+            ${isSwitchingAccount ? `<button type="button" class="secondary" id="inlineCancelSwitchBtn">取消</button>` : ""}
+          </div>
+        </div>
+      </div>`;
+
+    const emailInp = $("inlineEmailInput");
+    const nameInp = $("inlineNameInput");
+    if ($("inlineLoginSubmitBtn")) {
+      $("inlineLoginSubmitBtn").onclick = () => performLogin(emailInp.value, nameInp.value);
+    }
+    if (emailInp) {
+      emailInp.onkeydown = e => { if (e.key === "Enter") performLogin(emailInp.value, nameInp.value); };
+    }
+    if ($("inlineCancelSwitchBtn")) {
+      $("inlineCancelSwitchBtn").onclick = () => { isSwitchingAccount = false; renderAccountCenter(); };
+    }
+    box.querySelectorAll("[data-quick-email]").forEach(btn => {
+      btn.onclick = () => {
+        const em = btn.dataset.quickEmail;
+        const nm = (cloudUserFurnaces[em] && cloudUserFurnaces[em].name) || em.split("@")[0];
+        performLogin(em, nm);
+      };
+    });
+    return;
+  }
+
+  const initial = (currentUser.name || currentUser.email)[0].toUpperCase();
+  const myPublishedCount = skills.filter(s =>
+    (s.ownerEmail && s.ownerEmail.toLowerCase().includes(currentUser.email)) ||
+    (s.author && s.author.toLowerCase().includes(currentUser.name.toLowerCase()))
+  ).length;
+  const myAssistCount = helpRequests.reduce((acc, h) =>
+    acc + (h.replies || []).filter(r => r.helper && r.helper.toLowerCase().includes(currentUser.name.toLowerCase())).length, 0
+  );
+
+  box.innerHTML = `
+    <div class="account-profile-card">
+      <div class="profile-left">
+        <div class="profile-avatar-lg">${initial}</div>
+        <div class="profile-meta">
+          <h2>
+            <span>${currentUser.name} 的专属技能炉</span>
+            <span class="verified-pill">🟢 Google 账号已绑定</span>
+          </h2>
+          <div class="profile-email">
+            <span>📧 当前登录账号：<b>${currentUser.email}</b></span>
+            <span>·</span>
+            <span>☁️ 云端存储位置：<b>表格【12、用户技能炉档案】</b></span>
+          </div>
+        </div>
+      </div>
+      <div class="profile-stats">
+        <div class="p-stat"><b>${saved.size}</b><span>🔥 炉内收藏技能</span></div>
+        <div class="p-stat"><b>${myPublishedCount}</b><span>📤 我发布的技能</span></div>
+        <div class="p-stat"><b>${myAssistCount}</b><span>🤝 我参与的助力</span></div>
+      </div>
+      <div class="profile-actions">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="primary orange" id="profilePubSkillBtn">➕ 发布新技能入炉</button>
+          <button type="button" class="secondary" id="profileBrowseBtn">▦ 去技能广场淘技能</button>
+          <button type="button" class="secondary" id="profileSyncCloudBtn">🔄 立即同步我的技能炉到云端</button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="secondary" id="profileSwitchBtn">🔀 切换 Google 账号 / 改昵称</button>
+          <button type="button" class="secondary" id="profileLogoutBtn" style="color:#b91c1c;border-color:#fecaca;background:#fef2f2">🚪 退出账号</button>
+        </div>
+      </div>
+    </div>`;
+
+  $("profilePubSkillBtn").onclick = openPublishSkillModal;
+  $("profileBrowseBtn").onclick = () => { view = "all"; render(); };
+  $("profileSyncCloudBtn").onclick = () => {
+    persistState(true);
+    toast("☁️ 已将您当前的个人技能炉同步至 Google 表格【12、用户技能炉档案】！");
+  };
+  $("profileSwitchBtn").onclick = () => {
+    isSwitchingAccount = true;
+    renderAccountCenter();
+  };
+  $("profileLogoutBtn").onclick = performLogout;
+}
+
+window.addEventListener("message", e => {
+  if (e.data && e.data.type === "GOOGLE_AUTH_EMAIL" && e.data.email) {
+    const inp = $("inlineEmailInput") || $("loginEmailInput");
+    if (inp) {
+      inp.value = e.data.email;
+      const nameInp = $("inlineNameInput") || $("loginNameInput");
+      if (nameInp && !nameInp.value.trim()) nameInp.value = e.data.email.split("@")[0];
+      toast("✅ 已自动填入当前 Google 账号：" + e.data.email);
+    }
+  }
+});
+
+function requireAuth(actionFn) {
+  if (currentUser && currentUser.email) {
+    actionFn();
+  } else {
+    pendingAuthAction = actionFn;
+    view = "saved";
+    isSwitchingAccount = true;
+    render();
+    toast("🔑 请先在「我的技能炉」完成 Google 账号登录！");
+    setTimeout(() => {
+      const inp = $("inlineEmailInput");
+      if (inp) inp.focus();
+    }, 80);
+  }
+}
+
+function updateCounts() {
+  cats.forEach(c => {
+    c[1] = skills.filter(s => s.category === c[0]).length;
+  });
+  $("statTotalSkills").textContent = skills.length;
+  $("statTotalHelps").textContent = helpRequests.length;
+  $("topHelpCount").textContent = helpRequests.length;
+  $("sideHelpCount").textContent = helpRequests.length;
+  $("topSavedCount").textContent = saved.size;
+  $("sideSavedCount").textContent = saved.size;
+}
+
+function initCategoryList() {
+  updateCounts();
+  $("categoryList").innerHTML = cats.map(([name, n, icon]) =>
+    `<button class="catrow ${category === name ? 'active' : ''}" data-category="${name}">
+      <span>${icon}　${name}</span><small>${n}</small>
+    </button>`
+  ).join("");
+  const cf = $("categoryFilter");
+  const cur = cf.value;
+  cf.innerHTML = '<option value="">全部 9 大分类</option>' + cats.map(([name]) => `<option value="${name}">${name}</option>`).join("");
+  cf.value = cur;
+}
+
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.style.display = "block";
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(() => t.style.display = "none", 2400);
+}
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("✅ 已复制到剪贴板！");
+  } catch (e) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+    toast("✅ 已复制到剪贴板！");
+  }
+}
+
+function renderSkillCard(s) {
+  const isSaved = saved.has(s.id);
+  return `<article class="card">
+    <div class="image-wrap">
+      <img class="card-image" src="${normalizeDriveUrl(s.img)}" alt="${s.title}" loading="lazy">
+      <span class="category-pill">${s.category}</span>
+      <button class="bookmark ${isSaved ? 'saved' : ''}" data-save="${s.id}">
+        ${isSaved ? "🔥 已在炉中" : "＋ 装进技能炉"}
+      </button>
+    </div>
+    <div class="card-body">
+      <h2>${s.title}</h2>
+      <p class="desc">${s.desc}</p>
+      <div class="tags">${(s.tags || []).map(t => `<button class="tag" data-tag="${t}">${t}</button>`).join("")}</div>
+      <div class="card-meta"><span>模型：<b>${s.model}</b></span><span>${s.author || "社区共创"}</span></div>
+      <div class="card-footer">
+        <span>🔥 ${s.likes || 880} 人已用</span>
+        <button class="detail-btn" data-detail="${s.id}">查看技能档案 →</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+function renderHelpCard(h) {
+  const solved = (h.replies && h.replies.length > 0);
+  return `<article class="help-card">
+    <div class="help-top">
+      <img class="help-ref-img" src="${normalizeDriveUrl(h.refImg)}" alt="${h.title}">
+      <div style="display:flex;flex-direction:column">
+        <div>
+          <span class="help-status ${solved ? 'solved' : ''}">${solved ? '✅ 已有 ' + h.replies.length + ' 位伙伴助力' : '🆘 等待技能助力'}</span>
+          <span class="tag" style="margin-left:4px">${h.category}</span>
+        </div>
+        <h2 style="font-size:15px;margin:4px 0 6px">${h.title}</h2>
+        <p style="font-size:12px;color:#666159;line-height:1.6;margin:0 0 10px;flex:1">${h.desc}</p>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:11px;color:#918b81">求助人：${h.author}</span>
+          <button class="primary orange" style="padding:6px 13px;font-size:11px" data-assist="${h.id}">🤝 用技能炉助力他</button>
+        </div>
+      </div>
+    </div>
+    <div class="help-replies">
+      <div style="font-size:11px;font-weight:700;color:#78736a">🔥 社区伙伴贡献的同款技能方案 (${(h.replies || []).length})：</div>
+      ${(h.replies && h.replies.length) ? h.replies.map((r, idx) => `
+        <div class="reply-item">
+          <div class="reply-head">
+            <span>🧙‍♂️ ${r.helper || "热心炉友"} · 分享技能《${r.skillTitle || "定制配方"}》</span>
+            <button class="tag" style="background:#292821;color:#fff;cursor:pointer" data-copy-reply="${h.id}-${idx}">📋 复制词</button>
+          </div>
+          <div style="color:#666159;line-height:1.5">${r.advice || ""}</div>
+          ${r.prompt ? `<div class="reply-prompt">${r.prompt}</div>` : ""}
+        </div>
+      `).join("") : `<div style="font-size:12px;color:#a09a8e;padding:8px 0">暂无人接单，快点击右上角「🤝 用技能炉助力他」分享你的技能吧！</div>`}
+    </div>
+  </article>`;
+}
+
+function render() {
+  updateCounts();
+  renderAccountCenter();
+  const q = $("searchInput").value.trim().toLowerCase();
+  const cf = $("categoryFilter").value;
+  const mo = $("modelFilter").value;
+  const activeCat = category || cf;
+
+  document.querySelectorAll(".catrow").forEach(b => b.classList.toggle("active", b.dataset.category === category));
+  document.querySelectorAll(".navitem").forEach(b => b.classList.toggle("active", b.dataset.view === view));
+  document.querySelectorAll(".toplinks [data-nav]").forEach(a => a.classList.toggle("active", a.dataset.nav === view));
+
+  if (view === "help") {
+    $("heroEyebrow").textContent = "COMMUNITY HELP WANTED";
+    $("heroTitle").textContent = "🆘 参考图求助与技能助力专区";
+    $("heroDesc").textContent = "发出一张你想模仿却不会写的参考图，社区伙伴可以直接调用自己「技能炉」里的成熟 Skill 帮你拆解光影与提示词！";
+    const list = helpRequests.filter(h => {
+      const mQ = !q || [h.title, h.desc, h.category, h.author].join(" ").toLowerCase().includes(q);
+      const mC = !activeCat || h.category === activeCat;
+      return mQ && mC;
+    });
+    $("gallery").className = "help-grid";
+    $("gallery").innerHTML = list.length ? list.map(renderHelpCard).join("") : `<div class="empty"><b>暂无匹配的求助帖</b>点击右上角「📸 发参考图求助」发布第一条求助吧！</div>`;
+    $("resultCount").innerHTML = `当前共有 <strong>${list.length}</strong> 个参考图求助帖`;
+    return;
+  }
+
+  $("heroEyebrow").textContent = view === "saved" ? "MY SKILL FURNACE & GOOGLE IDENTITY" : "SKILL NETWORK & COMMUNITY";
+  $("heroTitle").textContent = view === "saved" ? "🔥 我的技能炉（个人专属中心）" : "AI 生图技能广场";
+  $("heroDesc").textContent = view === "saved"
+    ? "基于 Google 账号身份独立隔离保存。您从广场收藏或上传的技能均存于个人炉中，去「求助栏」助力别人时可一键调用！"
+    : "每个技能包均包含「来源版本 · 使用工作流 · 适用模型 · 真实测评」。支持一键收入自己的技能炉，或在求助栏互助共建。";
+
+  let list = skills.filter(s => {
+    const mQ = !q || [s.title, s.category, s.desc, ...(s.tags || []), s.prompt].join(" ").toLowerCase().includes(q);
+    const mC = !activeCat || s.category === activeCat;
+    const mM = !mo || (s.models || []).includes(mo) || (s.model || "").includes(mo);
+    const mS = (view !== "saved") || saved.has(s.id);
+    return mQ && mC && mM && mS;
+  });
+
+  const sort = $("sortFilter").value;
+  if (view === "popular" || sort === "popular") list.sort((x, y) => (y.pop || 0) - (x.pop || 0));
+  if (sort === "new") list.sort((x, y) => (y.id || 0) - (x.id || 0));
+
+  $("gallery").className = "gallery";
+  if (view === "saved" && (!currentUser || !currentUser.email)) {
+    $("gallery").innerHTML = `<div class="empty"><b>🔑 您当前尚未登录 Google 账号</b>请在上方「个人身份中心」输入您的 Google 邮箱登录，即可查看或管理您个人的专属技能炉！</div>`;
+    $("resultCount").innerHTML = `未登录状态 · 个人技能炉已隔离保护`;
+  } else if (view === "saved" && list.length === 0) {
+    $("gallery").innerHTML = `<div class="empty"><b>🔥 您的个人技能炉目前还是空的（0 个技能）</b>去「▦ 技能广场」点击卡片右上角「＋ 装进技能炉」，或点击「➕ 发布新技能」添加您的第一个专属技能吧！</div>`;
+    $("resultCount").innerHTML = `当前账号 <strong>${currentUser.email}</strong> 炉内共有 <strong>0</strong> 个技能包`;
+  } else {
+    $("gallery").innerHTML = list.length ? list.map(renderSkillCard).join("") : `<div class="empty"><b>没有找到匹配的技能包</b>试试切换分类，或点击右上角「➕ 发布新技能」！</div>`;
+    $("resultCount").innerHTML = view === "saved"
+      ? `当前账号 <strong>${currentUser.email}</strong> 炉内已展示 <strong>${list.length}</strong> 个专属技能包`
+      : `技能广场已展示 <strong>${list.length}</strong> 个可复用技能包`;
+  }
+}
+
+function normalizeDriveUrl(rawUrl) {
+  const url = String(rawUrl || "").trim();
+  if (!url) return "";
+  const matchD = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (matchD && matchD[1]) return `https://lh3.googleusercontent.com/d/${matchD[1]}=w1000`;
+  const matchId = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (matchId && matchId[1]) return `https://lh3.googleusercontent.com/d/${matchId[1]}=w1000`;
+  return url;
+}
+
+function openDetail(id) {
+  const s = skills.find(x => x.id === id);
+  if (!s) return;
+  const isSaved = saved.has(s.id);
+  $("modal").innerHTML = `
+    <img class="modal-img" src="${normalizeDriveUrl(s.img)}" alt="${s.title}">
+    <div class="modal-side">
+      <div class="modal-head">
+        <div>
+          <span class="tag">${s.category}</span>
+          <h2 style="margin:8px 0 4px;font-size:21px">${s.title}</h2>
+          <div style="font-size:12px;color:#8a857b">${s.desc}</div>
+        </div>
+        <button class="close" id="closeModal">✕</button>
+      </div>
+      <div class="archive-grid">
+        <div class="archive-box"><b>📦 社区来源与版本</b><span>${s.author || "社区共创 · v1.0"}</span></div>
+        <div class="archive-box"><b>⚙️ 适用模型与难度</b><span>${s.model} · ${s.difficulty || "入门"}</span></div>
+        <div class="archive-box" style="grid-column:span 2"><b>🧭 使用方法与工作流（怎么用）</b><span>${s.workflow || "1. 复制下方核心提示词 → 2. 粘贴至生图工具 → 3. 按需替换主体词与画幅比例"}</span></div>
+        <div class="archive-box" style="grid-column:span 2"><b>💬 真实测评反馈（好不好用）</b><span>${s.feedback || "社区实测出图率稳定，光影细节与质感表现优异。"}</span></div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:6px">✨ 核心生图配方 (Prompt / Skill)</div>
+        <div class="prompt-box">${s.prompt}</div>
+      </div>
+      <div class="modal-actions">
+        <button class="primary" id="copyPromptBtn">📋 一键复制配方</button>
+        <button class="secondary" id="toggleSaveBtn">${isSaved ? "🔥 已在我的技能炉（点击移出）" : "🔥 收入我的技能炉"}</button>
+      </div>
+    </div>`;
+  $("modalBackdrop").classList.add("open");
+  $("closeModal").onclick = () => $("modalBackdrop").classList.remove("open");
+  $("copyPromptBtn").onclick = () => copyText(s.prompt);
+  $("toggleSaveBtn").onclick = () => {
+    requireAuth(() => {
+      saved.has(s.id) ? saved.delete(s.id) : saved.add(s.id);
+      persistState(true);
+      openDetail(s.id);
+      render();
+      toast(saved.has(s.id) ? "🔥 已收入您的个人技能炉（云端已保存）！" : "已从您的技能炉移出");
+    });
+  };
+}
+
+function openAssistModal(helpId) {
+  requireAuth(() => {
+    const h = helpRequests.find(x => x.id === helpId);
+    if (!h) return;
+    const furnaceSkills = skills.filter(s => saved.has(s.id));
+    const otherSkills = skills.filter(s => !saved.has(s.id));
+    $("modal").innerHTML = `
+      <img class="modal-img" src="${normalizeDriveUrl(h.refImg)}" alt="${h.title}">
+      <div class="modal-side">
+        <div class="modal-head">
+          <div>
+            <span class="help-status">🤝 技能炉互助</span>
+            <h2 style="margin:6px 0 2px;font-size:19px">助力：${h.title}</h2>
+            <div style="font-size:12px;color:#8a857b">求助描述：${h.desc}</div>
+          </div>
+          <button class="close" id="closeModal">✕</button>
+        </div>
+        <div class="form-row">
+          <label>🔥 第一步：从「我的技能炉」选择现成技能一键填入（也可直接手写）</label>
+          <select id="assistSkillSelect">
+            <option value="">-- 请选择你要投喂给TA的技能包 --</option>
+            <optgroup label="🔥 我的技能炉（已收藏技能）">
+              ${furnaceSkills.map(s => `<option value="${s.id}">🔥 【${s.category}】${s.title}</option>`).join("")}
+            </optgroup>
+            <optgroup label="🌐 技能广场全部技能">
+              ${otherSkills.map(s => `<option value="${s.id}">【${s.category}】${s.title}</option>`).join("")}
+            </optgroup>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="form-row">
+            <label>你的昵称（助力者）</label>
+            <input id="assistHelper" value="${currentUser ? currentUser.name : '热心炉友'}" />
+          </div>
+          <div class="form-row">
+            <label>分享的技能名称</label>
+            <input id="assistSkillTitle" placeholder="例如：高反差写实光影配方" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label>💡 拆图思路与使用建议（告诉TA怎么微调出参考图效果）</label>
+          <textarea id="assistAdvice" placeholder="例如：这张参考图核心在于侧逆光和胶片颗粒，用我炉子里的这个技能，把主体词换成你的参考图人物即可！"></textarea>
+        </div>
+        <div class="form-row">
+          <label>✨ 投喂的生图提示词 (Prompt)</label>
+          <textarea id="assistPrompt" placeholder="从上方下拉框选择技能炉里的技能会自动填入，也可手动修改..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="primary orange" id="submitAssistBtn">🚀 立即送出技能助力</button>
+        </div>
+      </div>`;
+    $("modalBackdrop").classList.add("open");
+    $("closeModal").onclick = () => $("modalBackdrop").classList.remove("open");
+    $("assistSkillSelect").onchange = e => {
+      const picked = skills.find(s => String(s.id) === String(e.target.value));
+      if (picked) {
+        $("assistSkillTitle").value = picked.title;
+        $("assistAdvice").value = `推荐使用【${picked.title}】技能包！工作流：${picked.workflow || "直接复制下方提示词并根据参考图微调主体词即可。"}`;
+        $("assistPrompt").value = picked.prompt;
+      }
+    };
+    $("submitAssistBtn").onclick = () => {
+      const helper = $("assistHelper").value.trim() || (currentUser ? currentUser.name : "热心炉友");
+      const skillTitle = $("assistSkillTitle").value.trim() || "定制同款配方";
+      const advice = $("assistAdvice").value.trim();
+      const prompt = $("assistPrompt").value.trim();
+      if (!advice && !prompt) return toast("⚠️ 请先选择技能炉技能或填写提示词！");
+      if (!h.replies) h.replies = [];
+      const replyObj = { helper, skillTitle, advice, prompt };
+      h.replies.push(replyObj);
+      persistState();
+      $("modalBackdrop").classList.remove("open");
+      render();
+      toast("🎉 感谢助力！你的技能方案已展示在求助帖下方并同步至表格！");
+      sendToCloud({ action: "replyHelp", rowNumber: h.rowNumber || h.id, title: h.title, reply: replyObj });
+    };
+  });
+}
+
+function openPublishSkillModal() {
+  requireAuth(() => {
+    $("modal").innerHTML = `
+      <div style="background:#f1eee6;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:12px">
+        <img id="pubPreview" src="https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=900&q=80" style="width:100%;max-height:320px;object-fit:cover;border-radius:12px" />
+        <div style="font-size:12px;color:#625d55;text-align:center;line-height:1.5">
+          💡 <b>Google Drive 贴图方式</b>：将图片上传至云端硬盘 → 右键「知道链接的任何人可查看」→ 复制链接粘贴到右侧，系统将自动转换为高清直链并实时预览。
+        </div>
+      </div>
+      <div class="modal-side">
+        <div class="modal-head">
+          <div>
+            <span class="tag">SKILL CO-CREATION · 发布者：${currentUser.name}</span>
+            <h2 style="margin:6px 0 2px;font-size:20px">➕ 发布新技能到技能广场</h2>
+          </div>
+          <button class="close" id="closeModal">✕</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="form-row">
+            <label>技能标题</label>
+            <input id="pubTitle" placeholder="例如：电影感圣经史诗光效" />
+          </div>
+          <div class="form-row">
+            <label>所属分类（9大分类）</label>
+            <select id="pubCat">${cats.map(([c]) => `<option value="${c}">${c}</option>`).join("")}</select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="form-row">
+            <label>适用模型</label>
+            <input id="pubModel" value="Midjourney / Flux" />
+          </div>
+          <div class="form-row">
+            <label>🔗 Google Drive 图片分享链接</label>
+            <input id="pubImg" placeholder="粘贴 https://drive.google.com/file/d/... 链接" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label>技能简介与亮点</label>
+          <input id="pubDesc" placeholder="一句话说明这个技能适合什么场景、有什么视觉特点" />
+        </div>
+        <div class="form-row">
+          <label>使用方法 / 工作流</label>
+          <input id="pubWorkflow" placeholder="1. 复制提示词 → 2. 设置比例 --ar 9:16 → 3. 微调主体" />
+        </div>
+        <div class="form-row">
+          <label>✨ 核心提示词 (Prompt)</label>
+          <textarea id="pubPrompt" placeholder="粘贴完整可复用的 Prompt 提示词..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="primary" id="submitSkillBtn">🚀 发布并收入我的技能炉</button>
+        </div>
+      </div>`;
+    $("modalBackdrop").classList.add("open");
+    $("closeModal").onclick = () => $("modalBackdrop").classList.remove("open");
+    $("pubImg").oninput = e => {
+      const converted = normalizeDriveUrl(e.target.value);
+      if (converted) $("pubPreview").src = converted;
+    };
+    $("submitSkillBtn").onclick = () => {
+      const title = $("pubTitle").value.trim();
+      const prompt = $("pubPrompt").value.trim();
+      if (!title || !prompt) return toast("⚠️ 请填写技能标题和核心提示词！");
+      const cat = $("pubCat").value;
+      const rawImg = $("pubImg").value.trim();
+      const finalImg = normalizeDriveUrl(rawImg) || "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=900&q=80";
+      const newSkill = {
+        id: Date.now(),
+        title,
+        category: cat,
+        desc: $("pubDesc").value.trim() || "社区共创精选生图技能包",
+        workflow: $("pubWorkflow").value.trim() || "直接复制 Prompt 并按需替换主体词与比例。",
+        author: `${currentUser.name} · 社区共创`,
+        feedback: "社区新发布技能，已验证可用。",
+        tags: [cat, "社区共创"],
+        model: $("pubModel").value.trim() || "Midjourney / Flux",
+        models: ["Midjourney", "Flux"],
+        difficulty: "入门",
+        likes: 1,
+        pop: 99,
+        img: finalImg,
+        prompt
+      };
+      skills.unshift(newSkill);
+      saved.add(newSkill.id);
+      const savedTitles = skills.filter(s => saved.has(s.id)).map(s => s.title);
+      persistState(false);
+      $("modalBackdrop").classList.remove("open");
+      view = "all";
+      initCategoryList();
+      render();
+      toast("🎉 技能发布成功！已进入公共广场并收入您个人的技能炉！");
+      sendToCloud({ action: "addSkill", ...newSkill, savedTitles });
+    };
+  });
+}
+
+function openPublishHelpModal() {
+  requireAuth(() => {
+    $("modal").innerHTML = `
+      <div style="background:#fff7ed;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:12px">
+        <img id="helpPreview" src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80" style="width:100%;max-height:320px;object-fit:cover;border-radius:12px;border:2px dashed #fdba74" />
+        <div style="font-size:12px;color:#9a3412;text-align:center;line-height:1.5">
+          📸 <b>参考图上传方式</b>：将参考图上传至 Google Drive → 开启「知道链接的任何人可查看」→ 粘贴链接到右侧，即可实时预览！
+        </div>
+      </div>
+      <div class="modal-side">
+        <div class="modal-head">
+          <div>
+            <span class="help-status">🆘 参考图求助 · 求助人：${currentUser.name}</span>
+            <h2 style="margin:6px 0 2px;font-size:20px">发参考图向社区求助同款 Skill</h2>
+            <div style="font-size:12px;color:#8a857b">发出参考图后，其他伙伴可以从他们的「技能炉」里调用现成技能帮你还原！</div>
+          </div>
+          <button class="close" id="closeModal">✕</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="form-row">
+            <label>求助标题（想实现什么效果）</label>
+            <input id="helpTitle" placeholder="例如：求这种柔和圣光打在脸上的提示词！" />
+          </div>
+          <div class="form-row">
+            <label>所属风格分类</label>
+            <select id="helpCat">${cats.map(([c]) => `<option value="${c}">${c}</option>`).join("")}</select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="form-row">
+            <label>你的昵称</label>
+            <input id="helpAuthor" value="${currentUser.name}" />
+          </div>
+          <div class="form-row">
+            <label>🔗 参考图 Google Drive 分享链接</label>
+            <input id="helpImg" placeholder="粘贴 https://drive.google.com/file/d/... 链接" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label>详细说明你卡在哪里（如：光影不对、质感太假、构图不会控）</label>
+          <textarea id="helpDesc" placeholder="描述清楚你想还原参考图里的哪个细节，方便大佬精准投喂技能炉里的配方..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="primary orange" id="submitHelpBtn">🆘 立即发布求助帖</button>
+        </div>
+      </div>`;
+    $("modalBackdrop").classList.add("open");
+    $("closeModal").onclick = () => $("modalBackdrop").classList.remove("open");
+    $("helpImg").oninput = e => {
+      const converted = normalizeDriveUrl(e.target.value);
+      if (converted) $("helpPreview").src = converted;
+    };
+    $("submitHelpBtn").onclick = () => {
+      const title = $("helpTitle").value.trim();
+      if (!title) return toast("⚠️ 请填写求助标题！");
+      const rawImg = $("helpImg").value.trim();
+      const finalImg = normalizeDriveUrl(rawImg) || "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80";
+      const newHelp = {
+        id: Date.now(),
+        title,
+        category: $("helpCat").value,
+        author: $("helpAuthor").value.trim() || currentUser.name || "社区伙伴",
+        desc: $("helpDesc").value.trim() || "求问这张参考图的光影、构图和质感应该怎么写 Prompt？求技能炉支援！",
+        refImg: finalImg,
+        status: "待助力",
+        replies: []
+      };
+      helpRequests.unshift(newHelp);
+      persistState(false);
+      $("modalBackdrop").classList.remove("open");
+      view = "help";
+      render();
+      toast("🆘 求助帖已直接显示在网页，并同步至 Google 表格！");
+      sendToCloud({ action: "addHelp", ...newHelp });
+    };
+  });
+}
+
+document.addEventListener("click", e => {
+  const nav = e.target.closest("[data-nav]");
+  if (nav) {
+    e.preventDefault();
+    view = nav.dataset.nav;
+    if (view === "saved" && (!currentUser || !currentUser.email)) isSwitchingAccount = true;
+    render();
+    return;
+  }
+  const vBtn = e.target.closest("[data-view]");
+  if (vBtn) {
+    view = vBtn.dataset.view;
+    if (view === "saved" && (!currentUser || !currentUser.email)) isSwitchingAccount = true;
+    render();
+    return;
+  }
+  const catBtn = e.target.closest("[data-category]");
+  if (catBtn) {
+    category = category === catBtn.dataset.category ? "" : catBtn.dataset.category;
+    $("categoryFilter").value = category;
+    render();
+    return;
+  }
+  const saveBtn = e.target.closest("[data-save]");
+  if (saveBtn) {
+    const id = Number(saveBtn.dataset.save);
+    requireAuth(() => {
+      saved.has(id) ? saved.delete(id) : saved.add(id);
+      persistState(true);
+      render();
+      toast(saved.has(id) ? "🔥 已收入您的个人技能炉（云端已保存）！" : "已从您的技能炉移出");
+    });
+    return;
+  }
+  const detailBtn = e.target.closest("[data-detail]");
+  if (detailBtn) { openDetail(Number(detailBtn.dataset.detail)); return; }
+  const assistBtn = e.target.closest("[data-assist]");
+  if (assistBtn) { openAssistModal(Number(assistBtn.dataset.assist)); return; }
+  const copyReplyBtn = e.target.closest("[data-copy-reply]");
+  if (copyReplyBtn) {
+    const [hId, rIdx] = copyReplyBtn.dataset.copyReply.split("-");
+    const h = helpRequests.find(x => String(x.id) === String(hId));
+    if (h && h.replies && h.replies[rIdx]) copyText(h.replies[rIdx].prompt || h.replies[rIdx].advice);
+    return;
+  }
+  const tagBtn = e.target.closest("[data-tag]");
+  if (tagBtn) { $("searchInput").value = tagBtn.dataset.tag; render(); return; }
+  if (e.target.id === "modalBackdrop") $("modalBackdrop").classList.remove("open");
+});
+
+$("topNavAll").onclick = () => { view = "all"; render(); };
+$("topNavHelp").onclick = () => { view = "help"; render(); };
+$("topNavSaved").onclick = () => { view = "saved"; render(); };
+$("openPublishSkillBtn").onclick = openPublishSkillModal;
+$("openPublishHelpBtn").onclick = openPublishHelpModal;
+$("sideAskHelpBtn").onclick = openPublishHelpModal;
+$("userAuthBtn").onclick = () => {
+  view = "saved";
+  if (!currentUser || !currentUser.email) isSwitchingAccount = true;
+  render();
+  setTimeout(() => {
+    const inp = $("inlineEmailInput");
+    if (inp) inp.focus();
+  }, 80);
+};
+$("clearFilters").onclick = () => {
+  $("searchInput").value = "";
+  $("categoryFilter").value = "";
+  $("modelFilter").value = "";
+  $("sortFilter").value = "featured";
+  category = "";
+  render();
+  toast("🔄 已重置全部筛选条件");
+};
+["searchInput", "categoryFilter", "modelFilter", "sortFilter"].forEach(id => {
+  $(id).addEventListener("input", e => {
+    if (id === "categoryFilter") category = e.target.value;
+    render();
+  });
+});
+
+const defaultSkillMeta = {};
+skills.forEach(s => { defaultSkillMeta[s.title.trim()] = { ...s }; });
+
+async function syncFromGoogleSheet() {
+  try {
+    const res = await fetch(GOOGLE_SHEET_API);
+    const json = await res.json();
+    if (json && json.ok && Array.isArray(json.data)) {
+      const rebuiltSkills = [];
+      const seen = new Set();
+      json.data.forEach((item, idx) => {
+        const title = (item.title || "").trim();
+        if (!title || seen.has(title)) return;
+        seen.add(title);
+        const base = defaultSkillMeta[title] || {};
+        const modelsArr = (item.model || base.model || "Midjourney").split(/[\/,，]+/).map(s => s.trim()).filter(Boolean);
+        const normalizedImg = normalizeDriveUrl(item.img) || base.img || "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=85";
+        rebuiltSkills.push({
+          id: base.id || item.id || (1000 + idx),
+          title,
+          category: item.category || base.category || "口播类",
+          desc: item.desc || base.desc || "云端社区共创精选生图技能包",
+          workflow: item.workflow || base.workflow || "1. 复制下方核心提示词 → 2. 粘贴至生图工具 → 3. 按需微调主体与比例",
+          author: item.author || base.author || (item.status === "未更新" ? "表格待同步区 · 预览" : "云端表格同步 · 已验证"),
+          feedback: base.feedback || "已通过云端表格核验同步，出图稳定。",
+          tags: Array.isArray(item.tags) && item.tags.length ? item.tags : (base.tags || [item.category || "精选"]),
+          model: item.model || base.model || "Midjourney / Flux",
+          models: modelsArr,
+          difficulty: item.difficulty || base.difficulty || "入门",
+          likes: base.likes || (880 + idx * 19),
+          pop: base.pop || (100 - idx),
+          img: normalizedImg,
+          prompt: item.prompt || base.prompt || "",
+          ownerEmail: item.ownerEmail || ""
+        });
+      });
+      // 完全以云端表格当前剩余的技能为准（后台已删除的技能在前端立即删除）
+      skills.length = 0;
+      rebuiltSkills.forEach(s => skills.push(s));
+      try { localStorage.removeItem("ai_custom_skills"); } catch (e) {}
+    }
+    if (json && json.userFurnaces && typeof json.userFurnaces === "object") {
+      cloudUserFurnaces = json.userFurnaces;
+    }
+    loadUserSavedFromLocalOrCloud();
+    if (json && Array.isArray(json.helps) && json.helps.length > 0) {
+      helpRequests = json.helps.map(item => ({
+        ...item,
+        refImg: normalizeDriveUrl(item.refImg) || "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+        replies: Array.isArray(item.replies) ? item.replies : []
+      }));
+    }
+    if ($("cloudStatus")) {
+      $("cloudStatus").innerHTML = json && json.version === "v3"
+        ? "🟢 云端多用户身份隔离已激活（个人技能炉独立保存）"
+        : "🟠 提示：请在表格 Apps Script 更新 v3 代码并点击「部署 → 管理部署 → 编辑 → 新版本」";
+    }
+    updateAuthUI();
+    persistState(false);
+    initCategoryList();
+    render();
+  } catch (err) {
+    if ($("cloudStatus")) $("cloudStatus").textContent = "⚪ 离线模式（使用内置数据）";
+    console.warn("Using embedded community data:", err);
+  }
+}
+
+loadUserSavedFromLocalOrCloud();
+updateAuthUI();
+initCategoryList();
+render();
+syncFromGoogleSheet();
+</script>
+</body>
+</html>
